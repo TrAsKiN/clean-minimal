@@ -1,0 +1,28 @@
+{
+  "devDependencies": {
+    "@fitbit/sdk": "~5.0.1",
+    "@fitbit/sdk-cli": "^1.7.3"
+  },
+  "name": "clean-minimal",
+  "version": "0.1.4",
+  "private": true,
+  "fitbit": {
+    "appUUID": "0533ec1e-e098-45f9-8305-0079f1cc5863",
+    "appType": "clockface",
+    "appDisplayName": "Clean & Minimal",
+    "buildTargets": [
+      "vulcan"
+    ],
+    "i18n": {
+      "en-US": {
+        "name": "Clean & Minimal"
+      }
+    },
+    "defaultLanguage": "en-US",
+    "requestedPermissions": []
+  },
+  "scripts": {
+    "build": "fitbit-build",
+    "debug": "fitbit"
+  }
+}
