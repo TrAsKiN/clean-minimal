@@ -11,6 +11,7 @@
     "appType": "clockface",
     "appDisplayName": "Clean & Minimal",
     "buildTargets": [
+      "atlas",
       "vulcan"
     ],
     "i18n": {
