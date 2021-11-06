@@ -1,15 +1,27 @@
 import { me } from "appbit";
 import clock from "clock";
-import document from "document";
 import { preferences } from "user-settings";
 import { display } from "display";
 import { localizedDate } from "./locale-date";
+import { FitFont } from 'fitfont';
 
 clock.granularity = "minutes";
 
-const clockHours = document.getElementById("#clockHours");
-const clockMinutes = document.getElementById("#clockMinutes");
-const clockDate = document.getElementById("#date");
+const clockHours = new FitFont({
+  id:'clockHours',
+  font:'NovaMono_160',
+  halign: 'end',
+});
+const clockMinutes = new FitFont({
+  id:'clockMinutes',
+  font:'NovaMono_125',
+  halign: 'start',
+});
+const clockDate = new FitFont({
+  id:'date',
+  font:'NovaMono_18',
+  halign: 'middle',
+});
 
 if (display.aodAvailable && me.permissions.granted("access_aod")) {
   display.aodAllowed = true;

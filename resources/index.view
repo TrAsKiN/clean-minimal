@@ -1,5 +1,24 @@
 <svg width="100%" height="100%">
-    <text id="clockHours" />
-    <text id="clockMinutes" />
-    <text id="date" class="center-text" />
+    <use href="#fitfont" id="clockHours">
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+    </use>
+    <use href="#fitfont" id="clockMinutes">
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+    </use>
+    <use href="#fitfont" id="date">
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+        <use href="#fitfont-char"/>
+    </use>
 </svg>
