@@ -1,16 +1,19 @@
 #clockHours{
-  fill: lightgray;
+  fill: white;
   x: 50%+20;
   y: 50%+60;
+  opacity: 0.75;
 }
 #clockMinutes{
-  fill: gray;
+  fill: white;
   x: 50%+15;
   y: 50%+60;
+  opacity: 0.5;
 }
 
 #date{
-  fill: dimgray;
+  fill: white;
   x: 50%;
   y: 320;
+  opacity: 0.45;
 }

@@ -1,7 +1,7 @@
 <svg>
   <defs>
     <link rel="import" href="/mnt/sysassets/system_widget.defs" />
-    <link rel="import" href="fitfont.gui" />
+    <link rel="import" href="fitfont.defs" />
     <link rel="stylesheet" href="styles.css" />
   </defs>
 </svg>
