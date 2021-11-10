@@ -1,4 +1,4 @@
-import {me} from 'appbit';
+import {me as app} from 'appbit';
 import clock from 'clock';
 import {preferences} from 'user-settings';
 import {display} from 'display';
@@ -7,42 +7,70 @@ import {FitFont} from 'fitfont';
 import * as messaging from 'messaging';
 import * as fs from 'fs';
 
-clock.granularity = 'minutes';
+const SETTINGS_TYPE = 'cbor';
+const SETTINGS_FILE = 'settings.cbor';
+
+let settings = loadSettings();
 
 const clockHours = new FitFont({
   id:'clockHours',
   font:'NovaMono_160',
-  halign: 'end',
+  halign: 'end'
 });
 const clockMinutes = new FitFont({
   id:'clockMinutes',
   font:'NovaMono_125',
-  halign: 'start',
+  halign: 'start'
 });
 const clockDate = new FitFont({
-  id:'date',
+  id:'clockDate',
   font:'NovaMono_18',
-  halign: 'middle',
+  halign: 'middle'
 });
 
-if (display.aodAvailable && me.permissions.granted('access_aod')) {
+const baseOpacity = 0.9;
+let clockHoursOpacity = baseOpacity;
+let clockMinutesOpacity = baseOpacity - 0.25;
+let clockDateOpacity = baseOpacity - 0.4;
+
+setColor();
+setOpacity();
+
+if (app.permissions.granted('access_aod') && display.aodAvailable) {
   display.aodAllowed = true;
-  display.addEventListener('change', () => {
-    if (!display.aodActive && display.on) {
-      clockHours.style.fillOpacity = 1.0;
-      clockMinutes.style.fillOpacity = 1.0;
-      clockDate.style.fillOpacity = 1.0;
+  display.onchange = () => {
+    if (display.aodActive) {
+      clockHoursOpacity = baseOpacity - 0.2;
+      clockMinutesOpacity = baseOpacity - 0.45;
+      clockDateOpacity = baseOpacity - 0.6;
     } else {
-      clockHours.style.fillOpacity = 0.5;
-      clockMinutes.style.fillOpacity = 0.45;
-      clockDate.style.fillOpacity = 0.4;
+      clockHoursOpacity = baseOpacity;
+      clockMinutesOpacity = baseOpacity - 0.25;
+      clockDateOpacity = baseOpacity - 0.4;
     }
-  });
+    setOpacity();
+  };
 }
 
+display.onchange = () => {
+  if (display.on) {
+    clockHoursOpacity = baseOpacity;
+    clockMinutesOpacity = baseOpacity - 0.25;
+    clockDateOpacity = baseOpacity - 0.4;
+  } else if (!display.on && !app.permissions.granted('access_aod')) {
+    clockHoursOpacity = 0;
+    clockMinutesOpacity = 0;
+    clockDateOpacity = 0;
+  }
+  setOpacity();
+};
+
+clock.granularity = 'minutes';
+
 clock.ontick = (event) => {
-  let today = event.date;
-  let hours = today.getHours();
+  const today = event.date;
+  // const today = new Date(1986, 7, 20, 13, 37);
+  const hours = today.getHours();
   if (preferences.clockDisplay === '12h') {
     hours = hours % 12 || 12;
   } else {
@@ -53,18 +81,55 @@ clock.ontick = (event) => {
   clockDate.text = localizedDate(today);
 };
 
-messaging.peerSocket.addEventListener('message', (event) => {
-  let color = JSON.parse(event.data);
-  clockHours.style.fill = color;
-  clockMinutes.style.fill = color;
-  clockDate.style.fill = color;
-});
-
-messaging.peerSocket.addEventListener('open', (event) => {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send('getColor');
+messaging.peerSocket.onmessage = (event) => {
+  if (event.data.key === 'color' && event.data.newValue) {
+    const color = JSON.parse(event.data.newValue);
+    if (settings[event.data.key] !== color) {
+      settings[event.data.key] = color;
+      saveSettings();
+      setColor();
+      display.poke();
+    }
   }
-});
+};
+
+messaging.peerSocket.onopen = () => {
+  console.log(`App Socket Open`);
+};
+
+messaging.peerSocket.onclose = () => {
+  console.log(`App Socket Closed`);
+};
+
+app.onunload = saveSettings;
+
+function setOpacity() {
+  clockHours.style.opacity = clockHoursOpacity;
+  clockMinutes.style.opacity = clockMinutesOpacity;
+  clockDate.style.opacity = clockDateOpacity;
+}
+
+function setColor() {
+  clockHours.style.fill = settings['color'];
+  clockMinutes.style.fill = settings['color'];
+  clockDate.style.fill = settings['color'];
+}
+
+function loadSettings() {
+  try {
+    return fs.readFileSync(SETTINGS_FILE, SETTINGS_TYPE);
+  } catch (exception) {
+    console.warn(exception);
+    return {
+      'color': 'white'
+    };
+  }
+}
+
+function saveSettings() {
+  console.log(JSON.stringify(settings));
+  fs.writeFileSync(SETTINGS_FILE, settings, SETTINGS_TYPE);
+}
 
 function zeroPad(integer) {
   if (integer < 10) {

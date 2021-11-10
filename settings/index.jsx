@@ -1,20 +1,22 @@
-function Settings(props) {
+function mySettings(props) {
   return (
     <Page>
-      <ColorSelect
-        settingsKey="color"
-        colors={[
-          {color: 'white'},
-          {color: 'darkgray'},
-          {color: 'dimgray'},
-          {color: 'red'},
-          {color: 'steelblue'},
-          {color: 'seagreen'},
-          {color: 'deeppink'}
-        ]}
-      />
+      <Section title="Color">
+        <ColorSelect
+          settingsKey="color"
+          colors={[
+            {color: 'white'},
+            {color: 'darkgray'},
+            {color: 'dimgray'},
+            {color: 'red'},
+            {color: 'steelblue'},
+            {color: 'seagreen'},
+            {color: 'deeppink'}
+          ]}
+        />
+      </Section>
     </Page>
   );
 }
 
-registerSettingsPage(Settings);
+registerSettingsPage(mySettings);
