@@ -1,10 +1,10 @@
 #clockHours{
   x: 50%+20;
-  y: 50%+55;
+  y: 50%+50;
 }
 #clockMinutes{
   x: 50%+15;
-  y: 50%+55;
+  y: 50%+50;
 }
 
 #clockDate{

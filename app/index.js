@@ -28,10 +28,10 @@ const clockDate = new FitFont({
   halign: 'middle'
 });
 
-const baseOpacity = 0.9;
+const baseOpacity = 1.0;
 let clockHoursOpacity = baseOpacity;
 let clockMinutesOpacity = baseOpacity - 0.25;
-let clockDateOpacity = baseOpacity - 0.4;
+let clockDateOpacity = baseOpacity - 0.25;
 
 setColor();
 setOpacity();
@@ -40,30 +40,17 @@ if (app.permissions.granted('access_aod') && display.aodAvailable) {
   display.aodAllowed = true;
   display.onchange = () => {
     if (display.aodActive) {
-      clockHoursOpacity = baseOpacity - 0.2;
-      clockMinutesOpacity = baseOpacity - 0.45;
-      clockDateOpacity = baseOpacity - 0.6;
+      clockHoursOpacity = baseOpacity - 0.25;
+      clockMinutesOpacity = baseOpacity - 0.5;
+      clockDateOpacity = baseOpacity - 0.5;
     } else {
       clockHoursOpacity = baseOpacity;
       clockMinutesOpacity = baseOpacity - 0.25;
-      clockDateOpacity = baseOpacity - 0.4;
+      clockDateOpacity = baseOpacity - 0.25;
     }
     setOpacity();
   };
 }
-
-display.onchange = () => {
-  if (display.on) {
-    clockHoursOpacity = baseOpacity;
-    clockMinutesOpacity = baseOpacity - 0.25;
-    clockDateOpacity = baseOpacity - 0.4;
-  } else if (!display.on && !app.permissions.granted('access_aod')) {
-    clockHoursOpacity = 0;
-    clockMinutesOpacity = 0;
-    clockDateOpacity = 0;
-  }
-  setOpacity();
-};
 
 clock.granularity = 'minutes';
 
@@ -93,13 +80,8 @@ messaging.peerSocket.onmessage = (event) => {
   }
 };
 
-messaging.peerSocket.onopen = () => {
-  console.log(`App Socket Open`);
-};
-
-messaging.peerSocket.onclose = () => {
-  console.log(`App Socket Closed`);
-};
+messaging.peerSocket.onopen = () => {};
+messaging.peerSocket.onclose = () => {};
 
 app.onunload = saveSettings;
 
@@ -119,7 +101,6 @@ function loadSettings() {
   try {
     return fs.readFileSync(SETTINGS_FILE, SETTINGS_TYPE);
   } catch (exception) {
-    console.warn(exception);
     return {
       'color': 'white'
     };
@@ -127,7 +108,6 @@ function loadSettings() {
 }
 
 function saveSettings() {
-  console.log(JSON.stringify(settings));
   fs.writeFileSync(SETTINGS_FILE, settings, SETTINGS_TYPE);
 }
 
